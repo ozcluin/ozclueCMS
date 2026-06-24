@@ -1,65 +1,161 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { getSubmissions, getAccounts, getVerifications } from '@/lib/db';
 
-export default function Home() {
+export const dynamic = 'force-dynamic';
+
+export default async function DashboardPage() {
+  const submissions = await getSubmissions();
+  const accounts = await getAccounts();
+  const verifications = await getVerifications();
+
+
+  // Compute stats
+  const totalSubmissions = submissions.length;
+  const pendingInquiries = submissions.filter(sub => sub.status === 'New').length;
+  
+  const totalAccounts = accounts.length;
+  const activeAccounts = accounts.filter(acc => acc.status === 'Active').length;
+
+  const totalChecks = verifications.length;
+  const inProgressChecks = verifications.filter(v => v.status === 'In Progress' || v.status === 'Pending').length;
+  const completedChecks = verifications.filter(v => v.status === 'Completed').length;
+  const actionRequiredChecks = verifications.filter(v => v.status === 'Action Required').length;
+
+  // Recent 3 submissions
+  const recentSubmissions = submissions.slice(0, 3);
+  // Recent 4 checks
+  const recentChecks = verifications.slice(0, 4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <div className="page-title-area">
+        <div>
+          <h1 className="page-title">Operations Control</h1>
+          <p className="page-subtitle">Real-time status of inquiries, screening operations, and compliance tasks.</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* Stats Widgets */}
+      <div className="stat-grid">
+        <div className="glass-card stat-card">
+          <span className="stat-label">Pending Inquiries</span>
+          <span className="stat-val">{pendingInquiries}</span>
+          <span className="stat-change" style={{ color: 'var(--gold)' }}>
+            {totalSubmissions} Total Received
+          </span>
         </div>
-      </main>
-    </div>
+
+        <div className="glass-card stat-card">
+          <span className="stat-label">Active Clients</span>
+          <span className="stat-val">{activeAccounts}</span>
+          <span className="stat-change" style={{ color: 'var(--primary)' }}>
+            {totalAccounts} Registered Accounts
+          </span>
+        </div>
+
+        <div className="glass-card stat-card">
+          <span className="stat-label">Checks In Progress</span>
+          <span className="stat-val">{inProgressChecks}</span>
+          <span className="stat-change" style={{ color: 'var(--gold)' }}>
+            Across all corporations
+          </span>
+        </div>
+
+        <div className="glass-card stat-card">
+          <span className="stat-label">Completed Checks</span>
+          <span className="stat-val">{completedChecks}</span>
+          <span className="stat-change" style={{ color: 'var(--primary)' }}>
+            {actionRequiredChecks} Action Required
+          </span>
+        </div>
+      </div>
+
+      <div className="grid-2">
+        {/* Recent Inquiries Panel */}
+        <div className="glass-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>Recent Inquiries</h3>
+            <Link href="/inquiries" className="cms-btn cms-btn-secondary cms-btn-sm">
+              View All
+            </Link>
+          </div>
+          
+          {recentSubmissions.length === 0 ? (
+            <p style={{ color: 'var(--text-dim)', fontSize: '0.875rem' }}>No contact inquiries found.</p>
+          ) : (
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Contact</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentSubmissions.map((sub) => (
+                    <tr key={sub.id}>
+                      <td style={{ fontWeight: 600 }}>{sub.company || 'Individual'}</td>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                          <span>{sub.name}</span>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>{sub.email}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`badge badge-${sub.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {sub.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* Recent Background Checks Panel */}
+        <div className="glass-card">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
+            <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.25rem' }}>Verification Pipeline</h3>
+            <Link href="/verifications" className="cms-btn cms-btn-secondary cms-btn-sm">
+              Manage Checks
+            </Link>
+          </div>
+
+          {recentChecks.length === 0 ? (
+            <p style={{ color: 'var(--text-dim)', fontSize: '0.875rem' }}>No background checks found.</p>
+          ) : (
+            <div className="table-container">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentChecks.map((check) => (
+                    <tr key={check.id}>
+                      <td style={{ fontWeight: 600 }}>{check.candidateName}</td>
+                      <td>{check.type}</td>
+                      <td style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{check.clientCompany}</td>
+                      <td>
+                        <span className={`badge badge-${check.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                          {check.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
