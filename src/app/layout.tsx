@@ -37,12 +37,16 @@ export default async function RootLayout({
   const session = cookieStore.get('admin_session');
   
   const adminEmail = session ? session.value : '';
-  const isAuthenticated = adminEmail === 'pkumar@cluso.in' || adminEmail === 'indiaops@cluso.in';
+  const isAuthenticated = 
+    adminEmail === 'pkumar@cluso.in' || 
+    adminEmail === 'indiaops@cluso.in' || 
+    adminEmail === 'pkumar@ozclu.com';
   
   // Set up profile details based on logged-in admin
-  const adminName = adminEmail === 'pkumar@cluso.in' ? 'Pravin Kumar' : 'India Operations';
-  const adminAvatar = adminEmail === 'pkumar@cluso.in' ? 'PK' : 'IO';
-  const adminRole = adminEmail === 'pkumar@cluso.in' ? 'Super Admin' : 'Operations Lead';
+  const isPravin = adminEmail === 'pkumar@cluso.in' || adminEmail === 'pkumar@ozclu.com';
+  const adminName = isPravin ? 'Pravin Kumar' : 'India Operations';
+  const adminAvatar = isPravin ? 'PK' : 'IO';
+  const adminRole = isPravin ? 'Super Admin' : 'Operations Lead';
 
   if (!isAuthenticated) {
     return (

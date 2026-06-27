@@ -139,8 +139,8 @@ export async function loginAdmin(email: string, pass: string): Promise<{ success
   const trimmedEmail = email.trim().toLowerCase();
   
   if (
-    (trimmedEmail === 'pkumar@cluso.in' || trimmedEmail === 'indiaops@cluso.in') &&
-    pass === 'Cluso@2026'
+    ((trimmedEmail === 'pkumar@cluso.in' || trimmedEmail === 'indiaops@cluso.in') && pass === 'Cluso@2026') ||
+    (trimmedEmail === 'pkumar@ozclu.com' && pass === 'Ozclu@2026')
   ) {
     const cookieStore = await cookies();
     cookieStore.set('admin_session', trimmedEmail, {

@@ -42,10 +42,10 @@ MONGODB_URI=mongodb+srv://ozcluin_db_user:j1TohysQswLhn9Yh@cluster0.ur6nwa3.mong
 ```
 
 ### 🔐 Administrative Login Credentials
-The Admin CMS uses a built-in authentication system that works out-of-the-box. Use either of the following credentials to access the Operations Control Dashboard:
+The Admin CMS uses a built-in authentication system that works out-of-the-box. Use any of the following credentials to access the Operations Control Dashboard:
 
-* **Username (Email):** `pkumar@cluso.in` or `indiaops@cluso.in`
-* **Password:** `Cluso@2026`
+* **Username (Email):** `pkumar@ozclu.com` (Password: `Ozclu@2026`)
+* **Username (Email):** `pkumar@cluso.in` or `indiaops@cluso.in` (Password: `Cluso@2026`)
 
 ---
 

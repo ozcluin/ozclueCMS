@@ -75,7 +75,7 @@ export default function LoginScreen() {
                 className="login-input"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="e.g. pkumar@cluso.in"
+                placeholder="e.g. pkumar@ozclu.com"
                 required
                 disabled={loading}
               />
