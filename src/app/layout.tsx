@@ -23,6 +23,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "OzClu Admin — Verification & Screening Portal",
   description: "Internal operations dashboard for OzClu Verification Services.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default async function RootLayout({
@@ -43,7 +46,7 @@ export default async function RootLayout({
 
   if (!isAuthenticated) {
     return (
-      <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
         <head>
           <script dangerouslySetInnerHTML={{
             __html: `
@@ -62,7 +65,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{
           __html: `
