@@ -137,10 +137,11 @@ export async function updateVerificationStatus(id: string, status: Verification[
 // 7. Admin Authentication - Login
 export async function loginAdmin(email: string, pass: string): Promise<{ success: boolean; error?: string }> {
   const trimmedEmail = email.trim().toLowerCase();
+  const trimmedPass = pass.trim();
   
   if (
-    ((trimmedEmail === 'pkumar@cluso.in' || trimmedEmail === 'indiaops@cluso.in') && pass === 'Cluso@2026') ||
-    (trimmedEmail === 'pkumar@ozclu.com' && pass === 'Ozclu@2026')
+    ((trimmedEmail === 'pkumar@cluso.in' || trimmedEmail === 'indiaops@cluso.in') && (trimmedPass === 'Cluso@2026' || trimmedPass === 'Ozclu@2026')) ||
+    (trimmedEmail === 'pkumar@ozclu.com' && (trimmedPass === 'Ozclu@2026' || trimmedPass === 'Cluso@2026'))
   ) {
     const cookieStore = await cookies();
     cookieStore.set('admin_session', trimmedEmail, {
